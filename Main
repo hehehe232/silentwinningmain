@@ -1,10 +1,10 @@
 ---Pet Sim X
 
-loadstring(game:HttpGet'https://raw.githubusercontent.com/silentben9x/silentwinningmain/main/PetSim%20X')();
+-- discontinued loadstring(game:HttpGet'https://raw.githubusercontent.com/silentben9x/silentwinningmain/main/PetSim%20X')();
 
 ---Lumber Tycoon 2
 
-loadstring(game:HttpGet'https://raw.githubusercontent.com/silentben9x/silentwinningmain/main/Lumber%20Tycoon%202')();
+loadstring(game:HttpGet'https://raw.githubusercontent.com/silentben9x/silentwinningmain/main/LT2')();
 
 ---Murder Mystery 2 Coming Soon
 
