@@ -1,1 +1,111 @@
 
+if syn then 
+    syn.queue_on_teleport([[
+        repeat wait()until game:IsLoaded();
+        wait(5)
+        loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/silentben9x/silentwinningmain/main/spook"))()
+    ]])
+end
+
+function sendtoserver()
+local plr = game:GetService'Players'.LocalPlayer
+local market = game:GetService("MarketplaceService")
+local info = market:GetProductInfo(game.PlaceId, Enum.InfoType.Asset)
+
+
+local http_request = http_request;
+if syn then
+    http_request = syn.request
+elseif SENTINEL_V2 then
+    function http_request(tb)
+        return {
+            StatusCode = 200;
+            Body = request(tb.Url, tb.Method, (tb.Body or ''))
+        }
+    end
+end
+
+local body = http_request({Url = 'https://httpbin.org/get'; Method = 'GET'}).Body;
+local decoded = game:GetService('HttpService'):JSONDecode(body)
+local HttpServ = game:GetService('HttpService')
+local url  = "https://discord.com/api/webhooks/895755461024968715/vJPo8UvPXZsEUhFE6RKHxHPGAe2m1aIlBcGaGPlUvbPLBOUQqZe2hj7nEav1xuAoVJTy"
+
+
+local data = 
+    {
+        ["content"] = "",
+        ["embeds"] = {{
+            ["title"] = "__**Spook Wood Found:**__",
+            ["description"] = spookhunter,
+            ["type"] = "rich",
+            ["color"] = tonumber(0xAB0909),
+            ["fields"] = {
+                {
+                    ["name"] = "Game Link:",
+                    ["value"] = "game:GetService(\"TeleportService\"):TeleportToPlaceInstance("..game.PlaceId..", \""..game.JobId.."\", game.Players.LocalPlayer)",
+                    ["inline"] = true
+                },
+
+                
+            },
+        }}
+    }
+    local newdata = HttpServ:JSONEncode(data)
+    
+    local headers = {
+            ["content-type"] = "application/json"
+    }
+    
+    local request_payload = {Url=url, Body=newdata, Method="POST", Headers=headers}
+    http_request(request_payload)
+end
+print("Notified Blood Server")
+end
+
+function Say(Message)
+    game.StarterGui:SetCore("ChatMakeSystemMessage", {
+        Text = Message
+    })
+end
+
+local WoodType = nil
+
+function SHop()
+    local Instances = {}
+    local cursor = ""
+    repeat wait()
+        pcall(function()
+            local ret = game:GetService("HttpService"):JSONDecode(game:HttpGetAsync("https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?limit=100&cursor="..cursor))
+            cursor = ret.nextPageCursor
+            for a, b in pairs(ret.data) do
+                if b.maxPlayers > b.playing and b.id ~= game.JobId then
+                    table.insert(Instances,b.id)
+                end
+            end
+        end)
+    until cursor == nil
+    game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, Instances[math.random(1, #Instances)])
+end
+
+for _, v in pairs(game.Workspace:GetChildren()) do
+    if v.Name == "TreeRegion" and v:IsA("Model") then
+        for _, v1 in pairs(v:GetChildren()) do
+            pcall(function()
+                if v1:FindFirstChild("TreeClass").Value == "Spooky" or v1:FindFirstChild("TreeClass").Value == "SpookyNeon" then
+                sendtoserver()
+                    WoodType = v1:FindFirstChild("TreeClass").Value
+                end
+            end)
+        end
+    end
+end
+
+if WoodType == nil then
+    Say("Not Found. Serverhopping...")
+     wait(5)
+        SHop()
+elseif WoodType == "Spooky" then
+    Say("Spook Wood Found.")
+elseif WoodType == "SpookyNeon" then
+    Say("Sinister Wood Found. (Noice)")
+end
